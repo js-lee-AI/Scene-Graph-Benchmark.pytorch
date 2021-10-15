@@ -38,13 +38,23 @@ Our paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.o
 
 This project aims to build a new CODEBASE of Scene Graph Generation (SGG), and it is also a Pytorch implementation of the paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949). The previous widely adopted SGG codebase [neural-motifs](https://github.com/rowanz/neural-motifs) is detached from the recent development of Faster/Mask R-CNN. Therefore, I decided to build a scene graph benchmark on top of the well-known [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) project and define relationship prediction as an additional roi_head. By the way, thanks to their elegant framework, this codebase is much more novice-friendly and easier to read/modify for your own projects than previous neural-motifs framework(at least I hope so). It is a pity that when I was working on this project, the [detectron2](https://github.com/facebookresearch/detectron2) had not been released, but I think we can consider [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) as a more stable version with less bugs, hahahaha. I also introduce all the old and new metrics used in SGG, and clarify two common misunderstandings in SGG metrics in [METRICS.md](METRICS.md), which cause abnormal results in some papers.
 
+이 프로젝트는 SGG(Scene Graph Generation)의 새로운 CODEBASE를 구축하는 것을 목표로 하며 [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949) 문서의 Pytorch 구현이기도 합니다. 이전에 널리 채택된 SGG 코드베이스 [neural-motifs](https://github.com/rowanz/neural-motifs)는 Faster/Mask R-CNN의 최근 개발에서 분리되었습니다. 그래서 잘 알려진 [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark) 프로젝트 위에 씬 그래프 벤치마크를 구축하고 관계 예측을 추가 roi_head로 정의하기로 했습니다. 그건 그렇고, 우아한 프레임워크 덕분에 이 코드베이스는 이전의 신경 모티프 프레임워크보다 훨씬 초보자에게 친숙하고 자신의 프로젝트에 대해 읽기/수정하기가 더 쉽습니다(적어도 그렇게 되길 바랍니다). 제가 이 프로젝트를 할 당시에 [detectron2](https://github.com/facebookresearch/detectron2)가 출시되지 않은 것이 아쉽지만 [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark)는 버그가 적은 보다 안정적인 버전이라고 볼 수 있습니다. 하하하하. 또한 SGG에서 사용되는 모든 기존 및 새로운 메트릭을 소개하고 [METRICS.md](METRICS.md)에서 SGG 메트릭에 대한 두 가지 일반적인 오해를 명확히 합니다. 이는 일부 논문에서 비정상적인 결과를 유발합니다.
+
+
+
+
 ### Benefit from the up-to-date Faster R-CNN in [maskrcnn-benchmark](https://github.com/facebookresearch/maskrcnn-benchmark), this codebase achieves new state-of-the-art Recall@k on SGCls & SGGen (by 2020.2.16) through the reimplemented VCTree using two 1080ti GPUs and batch size 8:
 
 Models | SGGen R@20 | SGGen R@50 | SGGen R@100 | SGCls R@20 | SGCls R@50 | SGCls R@100 | PredCls R@20 | PredCls R@50 | PredCls R@100
 -- | -- | -- | -- | -- | -- | -- | -- | -- | -- 
 VCTree | 24.53 | 31.93 | 36.21 | 42.77 | 46.67 | 47.64 | 59.02 | 65.42 | 67.18
 
+<br>
+
 Note that all results of VCTree should be better than what we reported in [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949), because we optimized the tree construction network after the publication.
+
+VCTree의 모든 결과는 [Biased Training의 Unbiased Scene Graph Generation](https://arxiv.org/abs/2002.11949)에서 보고한 것보다 더 나을 것입니다. 왜냐하면 출판 후 트리 구성 네트워크를 최적화했기 때문입니다.
+
 
 ### The illustration of the Unbiased SGG from 'Unbiased Scene Graph Generation from Biased Training'
 
@@ -65,9 +75,17 @@ Explanation of metrics in our toolkit and reported results are given in [METRICS
 
 Since we tested many SGG models in our paper [Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949), I won't upload all the pretrained SGG models here. However, you can download the [pretrained Faster R-CNN](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ) we used in the paper, which is the most time consuming step in the whole training process (it took 4 2080ti GPUs). As to the SGG model, you can follow the rest instructions to train your own, which only takes 2 GPUs to train each SGG model. The results should be very close to the reported results given in [METRICS.md](METRICS.md)
 
+[Unbiased Scene Graph Generation from Biased Training](https://arxiv.org/abs/2002.11949) 논문에서 많은 SGG 모델을 테스트했기 때문에 여기에 사전 훈련된 모든 SGG 모델을 업로드하지 않겠습니다. 그러나 논문에서 사용한  [pretrained Faster R-CNN](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ)을 다운로드할 수 있습니다. 이는 전체 교육 과정에서 가장 시간이 많이 소요되는 단계입니다(4개의 2080ti GPU 사용). SGG 모델과 관련하여 나머지 지침에 따라 각 SGG 모델을 훈련하는 데 2개의 GPU만 필요한 자체 훈련을 수행할 수 있습니다. 결과는 [METRICS.md](METRICS.md)에 제공된 보고된 결과와 매우 유사해야 합니다.
+
+<br>
+
 After you download the [Faster R-CNN model](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ), please extract all the files to the directory `/home/username/checkpoints/pretrained_faster_rcnn`. To train your own Faster R-CNN model, please follow the next section.
 
 The above pretrained Faster R-CNN model achives 38.52/26.35/28.14 mAp on VG train/val/test set respectively.
+
+ [Faster R-CNN model](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21779870&authkey=AH5CPVb9g5E67iQ)을 다운로드한 후 `/home/username/checkpoints/pretrained_faster_rcnn` 디렉토리에 모든 파일의 압축을 풉니다. 자신의 Faster R-CNN 모델을 훈련하려면 다음 섹션을 따르십시오.
+
+위의 사전 훈련된 Faster R-CNN 모델은 VG train/val/test 세트에서 각각 38.52/26.35/28.14 mAp를 달성합니다.
 
 ## Faster R-CNN pre-training
 The following command can be used to train your own Faster R-CNN model:
@@ -75,6 +93,17 @@ The following command can be used to train your own Faster R-CNN model:
 CUDA_VISIBLE_DEVICES=0,1,2,3 python -m torch.distributed.launch --master_port 10001 --nproc_per_node=4 tools/detector_pretrain_net.py --config-file "configs/e2e_relation_detector_X_101_32_8_FPN_1x.yaml" SOLVER.IMS_PER_BATCH 8 TEST.IMS_PER_BATCH 4 DTYPE "float16" SOLVER.MAX_ITER 50000 SOLVER.STEPS "(30000, 45000)" SOLVER.VAL_PERIOD 2000 SOLVER.CHECKPOINT_PERIOD 2000 MODEL.RELATION_ON False OUTPUT_DIR /home/kaihua/checkpoints/pretrained_faster_rcnn SOLVER.PRE_VAL False
 ```
 where ```CUDA_VISIBLE_DEVICES``` and ```--nproc_per_node``` represent the id of GPUs and number of GPUs you use, ```--config-file``` means the config we use, where you can change other parameters. ```SOLVER.IMS_PER_BATCH``` and ```TEST.IMS_PER_BATCH``` are the training and testing batch size respectively, ```DTYPE "float16"``` enables Automatic Mixed Precision supported by [APEX](https://github.com/NVIDIA/apex), ```SOLVER.MAX_ITER``` is the maximum iteration, ```SOLVER.STEPS``` is the steps where we decay the learning rate, ```SOLVER.VAL_PERIOD``` and ```SOLVER.CHECKPOINT_PERIOD``` are the periods of conducting val and saving checkpoint, ```MODEL.RELATION_ON``` means turning on the relationship head or not (since this is the pretraining phase for Faster R-CNN only, we turn off the relationship head),  ```OUTPUT_DIR``` is the output directory to save checkpoints and log (considering `/home/username/checkpoints/pretrained_faster_rcnn`), ```SOLVER.PRE_VAL``` means whether we conduct validation before training or not.
+
+- ```CUDA_VISIBLE_DEVICES```, ```--nproc_per_node``` : GPU ID와 사용하는 GPU의 수
+-  ```--config-file``` : 변경할 수 있는 파라미터들을 가지고 있는 config
+- ```SOLVER.IMS_PER_BATCH```, ```TEST.IMS_PER_BATCH``` : 각각 훈련 및 테스트 batch_size 
+- ```DTYPE "float16"``` : [APEX](https://github.com/NVIDIA/apex)에서 지원하는 Automatic Mixed Precision를 활성화한다.  
+- ```SOLVER.MAX_ITER``` : 최대 iteration 수
+- ```SOLVER.STEPS``` : learning rate decay할 step 수
+- ```SOLVER.VAL_PERIOD``` : validation 수행 
+- ```SOLVER.CHECKPOINT_PERIOD``` : model checkpoint 저장 
+- ```MODEL.RELATION_ON``` means turning on the relationship head or not (since this is the pretraining phase for Faster R-CNN only, we turn off the relationship head)
+- ```OUTPUT_DIR``` is the output directory to save checkpoints and log (considering `/home/username/checkpoints/pretrained_faster_rcnn`), ```SOLVER.PRE_VAL``` means whether we conduct validation before training or not.
 
 
 ## Scene Graph Generation as RoI_Head
