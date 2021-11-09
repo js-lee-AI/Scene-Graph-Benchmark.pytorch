@@ -223,6 +223,8 @@ MOTIFS-PredCls-TDE  | 33.38 | 45.88 | 51.25 | 17.85 | 24.75 | 28.70 | 8.28 | 14.
 ## SGDet on Custom Images
 Note that evaluation on custum images is only applicable for SGDet model, because PredCls and SGCls model requires additional ground-truth bounding boxes information. To detect scene graphs into a json file on your own images, you need to turn on the switch TEST.CUSTUM_EVAL and give a folder path that contains the custom images to TEST.CUSTUM_PATH. Only JPG files are allowed. The output will be saved as custom_prediction.json in the given DETECTED_SGG_DIR.
 
+PredCls 및 SGCls 모델에는 추가 ground-truth bounding box 정보가 필요하기 때문에 custum 이미지에 대한 평가는 SGDet 모델에만 적용할 수 있습니다. 자신의 이미지에서 json 파일로 장면 그래프를 감지하려면 TEST.CUSTUM_EVAL 스위치를 켜고 사용자 지정 이미지가 포함된 폴더 경로를 TEST.CUSTUM_PATH에 지정해야 합니다. JPG 파일만 허용됩니다. 출력은 지정된 DETECTED_SGG_DIR에 custom_prediction.json으로 저장됩니다.
+
 Test Example 1 : (SGDet, **Causal TDE**, MOTIFS Model, SUM Fusion) [(checkpoint)](https://onedrive.live.com/embed?cid=22376FFAD72C4B64&resid=22376FFAD72C4B64%21781947&authkey=AF_EM-rkbMyT3gs)
 ```bash
 CUDA_VISIBLE_DEVICES=0 python -m torch.distributed.launch --master_port 10027 --nproc_per_node=1 tools/relation_test_net.py --config-file "configs/e2e_relation_X_101_32_8_FPN_1x.yaml" MODEL.ROI_RELATION_HEAD.USE_GT_BOX False MODEL.ROI_RELATION_HEAD.USE_GT_OBJECT_LABEL False MODEL.ROI_RELATION_HEAD.PREDICTOR CausalAnalysisPredictor MODEL.ROI_RELATION_HEAD.CAUSAL.EFFECT_TYPE TDE MODEL.ROI_RELATION_HEAD.CAUSAL.FUSION_TYPE sum MODEL.ROI_RELATION_HEAD.CAUSAL.CONTEXT_LAYER motifs TEST.IMS_PER_BATCH 1 DTYPE "float16" GLOVE_DIR /home/kaihua/glove MODEL.PRETRAINED_DETECTOR_CKPT /home/kaihua/checkpoints/causal-motifs-sgdet OUTPUT_DIR /home/kaihua/checkpoints/causal-motifs-sgdet TEST.CUSTUM_EVAL True TEST.CUSTUM_PATH /home/kaihua/checkpoints/custom_images DETECTED_SGG_DIR /home/kaihua/checkpoints/your_output_path
@@ -281,18 +283,18 @@ counterfactual inference은 SGG에만 적용되는 것은 아닙니다. 사실 �
 
 ## Frequently Asked Questions:
 
-1. **Q:** Fail to load the given checkpoints.
+(1). **Q:** Fail to load the given checkpoints.
 **A:** The model to be loaded is based on the last_checkpoint file in the OUTPUT_DIR path. If you fail to load the given pretained checkpoints, it probably because the last_checkpoint file still provides the path in my workstation rather than your own path.
 
-1. **Q:** 주어진 체크포인트를 로드하지 못했습니다.
+(1). **Q:** 주어진 체크포인트를 로드하지 못했습니다.
 **A:** 로드할 모델은 OUTPUT_DIR 경로의 last_checkpoint 파일을 기반으로 합니다. 주어진 미리 포함된 체크포인트를 로드하는 데 실패했다면 아마도 last_checkpoint 파일이 여전히 사용자 자신의 경로가 아닌 내 워크스테이션의 경로를 제공하기 때문일 것입니다.
 
 <br>
 
-2. **Q:** AssertionError on "assert len(fns) == 108073"
+(2). **Q:** AssertionError on "assert len(fns) == 108073"
 **A:** If you are working on VG dataset, it is probably caused by the wrong DATASETS (data path) in maskrcnn_benchmark/config/paths_catlog.py. If you are working on your custom datasets, just comment out the assertions.
 
-2. **Q:** "assert len(fns) == 108073"에 대한 AssertionError
+(2). **Q:** "assert len(fns) == 108073"에 대한 AssertionError
 **A:** VG 데이터 세트에서 작업하는 경우 maskrcnn_benchmark/config/paths_catlog.py의 잘못된 DATASETS(데이터 경로)로 인해 발생할 수 있습니다. 사용자 정의 데이터 세트에서 작업하는 경우 어설션을 주석 처리하십시오.
 
 <br>
